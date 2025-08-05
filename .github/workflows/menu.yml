@@ -62,51 +62,33 @@ jobs:
         env:
           MY_PAT: ${{ secrets.MY_PAT }} # Make the secret available as an env var
         run: |
-          case "${{ github.event.inputs.script }}" in
-            "Add content")
-              echo "You can start adding your content to the markdown files in the 'spec' directory."
-              echo "You can do this by editing local files in an editor or by going to your repository on GitHub."
-              echo "More info: https://blockchainbird.github.io/spec-up-t-website/docs/various-roles/content-authors-guide/introduction"
-              ;;
-            "Render specification")
+          case "${{ github.event.inputs.action_type }}" in
+            render)
               npm run render
               ;;
-            "Export to PDF")
+            topdf)
               npm run topdf
               ;;
-            "Export to DOCX")
+            todocx)
               npm run todocx
               ;;
-            "Collect external references")
-              npm run collectExternalReferences
-              ;;
-            "Add, remove or view xref source")
-              npm run addremovexrefsource
-              ;;
-            "Configure")
-              npm run configure
-              ;;
-            "Run health check")
-              npm run healthCheck
-              ;;
-            "Open documentation website")
-              echo "Opening documentation website: https://blockchainbird.github.io/spec-up-t-website/"
-              echo "Please visit the URL manually: https://blockchainbird.github.io/spec-up-t-website/"
-              ;;
-            "Freeze specification")
+            freeze)
               npm run freeze
               ;;
-            "Custom update")
+            custom-update)
               npm run custom-update
               ;;
+            collectExternalReferences)
+              npm run collectExternalReferences
+              ;;
             *)
-              echo "Unknown script: ${{ github.event.inputs.script }}"
+              echo "Unknown action_type: ${{ github.event.inputs.action_type }}"
               exit 1
               ;;
           esac
 
       - name: Commit and push changes
-        if: success() && github.event.inputs.script != 'Add content' && github.event.inputs.script != 'Open documentation website'
+        if: success() && github.event.inputs.action_type != 'Add content' && github.event.inputs.action_type != 'Open documentation website'
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
@@ -115,7 +97,7 @@ jobs:
           git add .
           
           # Commit with appropriate message
-          case "${{ github.event.inputs.script }}" in
+          case "${{ github.event.inputs.action_type }}" in
             "Render specification")
               git commit -m "Render specification: Update files" || echo "No changes to commit"
               ;;
@@ -144,7 +126,7 @@ jobs:
               git commit -m "Custom update: Copy files from spec-up-t" || echo "No changes to commit"
               ;;
             *)
-              git commit -m "Update files: ${{ github.event.inputs.script }}" || echo "No changes to commit"
+              git commit -m "Update files: ${{ github.event.inputs.action_type }}" || echo "No changes to commit"
               ;;
           esac
           
@@ -152,7 +134,7 @@ jobs:
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
 
       - name: Commit output files
-        if: success() && github.event.inputs.script != 'Add content' && github.event.inputs.script != 'Open documentation website' && github.event.inputs.script != 'Configure' && github.event.inputs.script != 'Run health check'
+        if: success() && github.event.inputs.action_type != 'Add content' && github.event.inputs.action_type != 'Open documentation website' && github.event.inputs.action_type != 'Configure' && github.event.inputs.action_type != 'Run health check'
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
