@@ -63,41 +63,23 @@ jobs:
           MY_PAT: ${{ secrets.MY_PAT }} # Make the secret available as an env var
         run: |
           case "${{ github.event.inputs.action_type }}" in
-            "Add content")
-              echo "You can start adding your content to the markdown files in the 'spec' directory."
-              echo "You can do this by editing local files in an editor or by going to your repository on GitHub."
-              echo "More info: https://blockchainbird.github.io/spec-up-t-website/docs/various-roles/content-authors-guide/introduction"
-              ;;
-            "Render specification")
+            render)
               npm run render
               ;;
-            "Export to PDF")
+            topdf)
               npm run topdf
               ;;
-            "Export to DOCX")
+            todocx)
               npm run todocx
               ;;
-            "Collect external references")
-              npm run collectExternalReferences
-              ;;
-            "Add, remove or view xref source")
-              npm run addremovexrefsource
-              ;;
-            "Configure")
-              npm run configure
-              ;;
-            "Run health check")
-              npm run healthCheck
-              ;;
-            "Open documentation website")
-              echo "Opening documentation website: https://blockchainbird.github.io/spec-up-t-website/"
-              echo "Please visit the URL manually: https://blockchainbird.github.io/spec-up-t-website/"
-              ;;
-            "Freeze specification")
+            freeze)
               npm run freeze
               ;;
-            "Custom update")
+            custom-update)
               npm run custom-update
+              ;;
+            collectExternalReferences)
+              npm run collectExternalReferences
               ;;
             *)
               echo "Unknown action_type: ${{ github.event.inputs.action_type }}"
