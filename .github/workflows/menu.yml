@@ -3,23 +3,27 @@ name: Run Menu
 on:
   workflow_dispatch:
     inputs:
-      script:
-        description: 'Select the script to run'
-        type: choice
+      action_type:
+        description: 'Action to perform'
         required: true
-        default: 'Render specification'
+        default: 'render'
+        type: choice
         options:
-          - Add content
-          - Render specification
-          - Export to PDF
-          - Export to DOCX
-          - Collect external references
-          - Add, remove or view xref source
-          - Configure
-          - Run health check
-          - Open documentation website
-          - Freeze specification
-          - Custom update
+          - render
+          - topdf
+          - todocx
+          - freeze
+          - custom-update
+          - collectExternalReferences
+      repository:
+        description: 'Repository'
+        required: false
+      branch:
+        description: 'Branch'
+        required: false
+      triggered_by:
+        description: 'Triggered by'
+        required: false
 
 jobs:
   build-and-deploy-spec:
