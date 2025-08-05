@@ -88,7 +88,7 @@ jobs:
           esac
 
       - name: Commit and push changes
-        if: success() && github.event.inputs.action_type != 'Add content' && github.event.inputs.action_type != 'Open documentation website'
+        if: success()
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
@@ -98,31 +98,22 @@ jobs:
           
           # Commit with appropriate message
           case "${{ github.event.inputs.action_type }}" in
-            "Render specification")
+            render)
               git commit -m "Render specification: Update files" || echo "No changes to commit"
               ;;
-            "Export to PDF")
+            topdf)
               git commit -m "Export to PDF" || echo "No changes to commit"
               ;;
-            "Export to DOCX")
+            todocx)
               git commit -m "Export to DOCX" || echo "No changes to commit"
               ;;
-            "Collect external references")
+            collectExternalReferences)
               git commit -m "Collect external references" || echo "No changes to commit"
               ;;
-            "Add, remove or view xref source")
-              git commit -m "Add, remove or view xref source" || echo "No changes to commit"
-              ;;
-            "Configure")
-              git commit -m "Configure" || echo "No changes to commit"
-              ;;
-            "Run health check")
-              git commit -m "Run health check" || echo "No changes to commit"
-              ;;
-            "Freeze specification")
+            freeze)
               git commit -m "Freeze specification" || echo "No changes to commit"
               ;;
-            "Custom update")
+            custom-update)
               git commit -m "Custom update: Copy files from spec-up-t" || echo "No changes to commit"
               ;;
             *)
@@ -134,7 +125,7 @@ jobs:
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
 
       - name: Commit output files
-        if: success() && github.event.inputs.action_type != 'Add content' && github.event.inputs.action_type != 'Open documentation website' && github.event.inputs.action_type != 'Configure' && github.event.inputs.action_type != 'Run health check'
+        if: success()
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
